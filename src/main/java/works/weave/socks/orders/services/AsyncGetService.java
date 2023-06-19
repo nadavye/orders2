@@ -90,4 +90,14 @@ public class AsyncGetService {
         LOG.debug("Received: " + responseBody);
         return new AsyncResult<>(responseBody);
     }
+
+     @Async
+    public <T, B> Future<T> myQualityRisk(URI uri, B body, ParameterizedTypeReference<T> returnType) {
+        RequestEntity<B> request = RequestEntity.post(uri).contentType(MediaType.APPLICATION_JSON).accept(MediaType
+                .APPLICATION_JSON).body(body);
+        LOG.debug("Requesting: " + request.toString());
+        T responseBody = restProxyTemplate.getRestTemplate().exchange(request, returnType).getBody();
+        LOG.debug("Received: " + responseBody);
+        return new AsyncResult<>(responseBody);
+    }
 }
