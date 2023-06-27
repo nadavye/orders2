@@ -134,6 +134,15 @@ public class OrdersController {
         return matcher.group(0);
     }
 
+       private String myUntestedFunction(String href) {
+        Pattern idPattern = Pattern.compile("[\\w-]+$");
+        Matcher matcher = idPattern.matcher(href);
+        if (!matcher.find()) {
+            throw new IllegalStateException("Could not parse user ID from: " + href);
+        }
+        return matcher.group(0);
+    }
+
 //    TODO: Add link to shipping
 //    @RequestMapping(method = RequestMethod.GET, value = "/orders")
 //    public @ResponseBody
