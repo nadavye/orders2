@@ -136,7 +136,7 @@ public class OrdersController {
     CustomerOrder updateOrder(   @PathVariable("orderId") Long orderId,
                                  @RequestBody NewOrderResource orderToUpdate) {
         try {
-            System.out.println("Update order - Nadav!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.out.println("Update order - Nadav!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             if (orderId == null || orderToUpdate.address == null  || orderToUpdate.card == null || orderToUpdate.items == null) {
                 throw new InvalidOrderException("Invalid update order request. Order requires id, address, card and items.");
             }
