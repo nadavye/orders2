@@ -28,8 +28,8 @@ public class HTTPMonitoringInterceptor implements HandlerInterceptor {
     private static final String startTimeKey = "startTime";
     @Autowired
     ResourceMappings mappings;
-    @Autowired
-    JpaHelper jpaHelper;
+//    @Autowired
+//    JpaHelper jpaHelper;
     @Autowired
     RepositoryRestConfiguration repositoryConfiguration;
     @Autowired
@@ -84,15 +84,15 @@ public class HTTPMonitoringInterceptor implements HandlerInterceptor {
     private Set<PatternsRequestCondition> getUrlPatterns() {
         if (this.urlPatterns == null) {
             this.urlPatterns = new HashSet<>();
-            requestMappingHandlerMapping.getHandlerMethods().forEach((mapping, handlerMethod) ->
-                    urlPatterns.add(mapping.getPatternsCondition()));
-            RepositoryRestHandlerMapping repositoryRestHandlerMapping = new
-                    RepositoryRestHandlerMapping(mappings, repositoryConfiguration);
-            repositoryRestHandlerMapping.setJpaHelper(jpaHelper);
-            repositoryRestHandlerMapping.setApplicationContext(applicationContext);
-            repositoryRestHandlerMapping.afterPropertiesSet();
-            repositoryRestHandlerMapping.getHandlerMethods().forEach((mapping, handlerMethod) ->
-                    urlPatterns.add(mapping.getPatternsCondition()));
+//            requestMappingHandlerMapping.getHandlerMethods().forEach((mapping, handlerMethod) ->
+//                    urlPatterns.add(mapping.getPatternsCondition()));
+//            RepositoryRestHandlerMapping repositoryRestHandlerMapping = new
+//                    RepositoryRestHandlerMapping(mappings, repositoryConfiguration);
+//            repositoryRestHandlerMapping.setJpaHelper(jpaHelper);
+//            repositoryRestHandlerMapping.setApplicationContext(applicationContext);
+//            repositoryRestHandlerMapping.afterPropertiesSet();
+//            repositoryRestHandlerMapping.getHandlerMethods().forEach((mapping, handlerMethod) ->
+//                    urlPatterns.add(mapping.getPatternsCondition()));
         }
         return this.urlPatterns;
     }
