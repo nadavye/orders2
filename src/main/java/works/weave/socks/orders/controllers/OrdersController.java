@@ -22,6 +22,7 @@ import works.weave.socks.orders.values.PaymentResponse;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +31,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-@RepositoryRestController
+//@RepositoryRestController
+@RestController
 public class OrdersController {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -52,6 +54,8 @@ public class OrdersController {
     @ResponseBody
     CustomerOrder newOrder(@RequestBody NewOrderResource item) {
         try {
+            System.out.println("newOrder - Nadav!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
 
             if (item.address == null || item.customer == null || item.card == null || item.items == null) {
                 throw new InvalidOrderException("Invalid order request. Order requires customer, address, card and items.");
@@ -122,6 +126,44 @@ public class OrdersController {
             throw new IllegalStateException("Unable to create order due to timeout from one of the services.", e);
         } catch (InterruptedException | IOException | ExecutionException e) {
             throw new IllegalStateException("Unable to create order due to unspecified IO error.", e);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(path = "/orders/{orderId}", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    CustomerOrder updateOrder(   @PathVariable("orderId") Long orderId,
+                                 @RequestBody NewOrderResource orderToUpdate) {
+        try {
+            System.out.println("Update order - Nadav!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            if (orderId == null || orderToUpdate.address == null  || orderToUpdate.card == null || orderToUpdate.items == null) {
+                throw new InvalidOrderException("Invalid update order request. Order requires id, address, card and items.");
+            }
+
+            if (orderToUpdate.customer != null)
+                throw new InvalidOrderException("Invalid update order request. Customer name cannot be updated.");
+
+
+            LOG.debug("Starting calls");
+
+            Optional<CustomerOrder> order2 = customerOrderRepository.findById(orderId.toString());
+
+            CustomerOrder order = new CustomerOrder();
+            order.setId(orderId.toString());
+            order.setItems(order2.get().getItems());
+            order.setCard(order2.get().getCard());
+            order.setAddress(order2.get().getAddress());
+            order.setCustomerId(order2.get().getCustomerId());
+            order.setDate(Calendar.getInstance().getTime());
+            LOG.debug("Received data: " + order.toString());
+
+            CustomerOrder savedOrder = customerOrderRepository.save(order);
+            LOG.debug("Saved order: " + savedOrder);
+
+            return savedOrder;
+        } catch (RuntimeException e) {
+            throw new IllegalStateException("Unable to create order due to internal error.", e);
         }
     }
 

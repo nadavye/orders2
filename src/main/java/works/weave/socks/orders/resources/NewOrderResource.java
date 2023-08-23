@@ -13,4 +13,7 @@ public class NewOrderResource {
     public URI card;
     @URL
     public URI items;
+
+    @URL
+    public URI id;
 }
