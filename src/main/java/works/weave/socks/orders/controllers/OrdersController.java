@@ -123,8 +123,10 @@ public class OrdersController {
 
             return savedOrder;
         } catch (TimeoutException e) {
+            LOG.error("Failed to update order due to timeout exception.", e);
             throw new IllegalStateException("Unable to create order due to timeout from one of the services.", e);
         } catch (InterruptedException | IOException | ExecutionException e) {
+            LOG.error("Failed to update order due to error.", e);
             throw new IllegalStateException("Unable to create order due to unspecified IO error.", e);
         }
     }
@@ -163,6 +165,7 @@ public class OrdersController {
 
             return savedOrder;
         } catch (RuntimeException e) {
+            LOG.error("Failed to update order due to error.", e);
             throw new IllegalStateException("Unable to create order due to internal error.", e);
         }
     }
