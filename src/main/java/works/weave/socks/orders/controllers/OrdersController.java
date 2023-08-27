@@ -166,7 +166,7 @@ public class OrdersController {
             return savedOrder;
         } catch (RuntimeException e) {
             LOG.error("Failed to update order due to error.", e);
-            throw new IllegalStateException("Unable to create order due to internal error.", e);
+            throw new InvalidOrderException("Unable to update order due to internal error:" + e.getMessage());
         }
     }
 
@@ -226,4 +226,5 @@ public class OrdersController {
             super(s);
         }
     }
+
 }
