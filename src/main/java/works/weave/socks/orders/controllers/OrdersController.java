@@ -36,6 +36,8 @@ import java.util.regex.Pattern;
 public class OrdersController {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
+    private OrdersHelper ordersHelper = new OrdersHelper();
+
     @Autowired
     private OrdersConfigurationProperties config;
 
@@ -78,6 +80,7 @@ public class OrdersController {
             LOG.debug("End of calls.");
 
             float amount = calculateTotal(itemsFuture.get(timeout, TimeUnit.SECONDS));
+            amount = (float) ordersHelper.applyDiscountIfRelevant((double) amount);
 
             // Call payment service to make sure they've paid
             PaymentRequest paymentRequest = new PaymentRequest(
@@ -106,6 +109,8 @@ public class OrdersController {
                     (customerId), new ParameterizedTypeReference<Shipment>() {
             });
 
+
+
             CustomerOrder order = new CustomerOrder(
                     null,
                     customerId,
@@ -121,6 +126,7 @@ public class OrdersController {
             CustomerOrder savedOrder = customerOrderRepository.save(order);
             LOG.debug("Saved order: " + savedOrder);
 
+            ordersHelper.collectStatistics("OrderCompleted");
             return savedOrder;
         } catch (TimeoutException e) {
             LOG.error("Failed to update order due to timeout exception.", e);
@@ -162,6 +168,8 @@ public class OrdersController {
 
             CustomerOrder savedOrder = customerOrderRepository.save(order);
             LOG.debug("Saved order: " + savedOrder);
+
+            ordersHelper.collectStatistics("OrderUpdated");
 
             return savedOrder;
         } catch (RuntimeException e) {
