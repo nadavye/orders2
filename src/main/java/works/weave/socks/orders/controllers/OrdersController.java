@@ -11,6 +11,7 @@ import org.springframework.hateoas.mvc.TypeReferences;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import works.weave.socks.orders.ObjectMapper;
 import works.weave.socks.orders.config.OrdersConfigurationProperties;
 import works.weave.socks.orders.entities.*;
 import works.weave.socks.orders.repositories.CustomerOrderRepository;
@@ -37,6 +38,7 @@ public class OrdersController {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private OrdersHelper ordersHelper = new OrdersHelper();
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private OrdersConfigurationProperties config;
@@ -88,6 +90,9 @@ public class OrdersController {
                     cardFuture.get(timeout, TimeUnit.SECONDS).getContent(),
                     customerFuture.get(timeout, TimeUnit.SECONDS).getContent(),
                     amount);
+
+            objectMapper.toInternalPaymentRequest(paymentRequest);
+
             LOG.info("Sending payment request: " + paymentRequest);
             Future<PaymentResponse> paymentFuture = asyncGetService.postResource(
                     config.getPaymentUri(),
@@ -144,7 +149,7 @@ public class OrdersController {
     CustomerOrder updateOrder(   @PathVariable("orderId") Long orderId,
                                  @RequestBody NewOrderResource orderToUpdate) {
         try {
-            System.out.println("Update order - Nadav!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.out.println("Update order - Some change by Nadav!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             if (orderId == null || orderToUpdate.address == null  || orderToUpdate.card == null || orderToUpdate.items == null) {
                 throw new InvalidOrderException("Invalid update order request. Order requires id, address, card and items.");
             }
